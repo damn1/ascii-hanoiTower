@@ -1,6 +1,5 @@
 # ascii-hanoiTower
-A Java implementation of hanoi tower game and a lecture about recursion.
-Ascii interface and color prints to underline recursion steps:
+A Java implementation of hanoi tower game and a lecture about recursion. You can choose to play or to see the recursive solution, with the help of an ascii interface and color prints to underline recursion steps:
 
 move ( 4 pieces , source : 1 , helper : 2 , target : 3 ) 
     ┌┐        ┌┐        ╔╗    
