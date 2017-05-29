@@ -44,7 +44,6 @@ public class D4mnAsciiHanoiTower {
      */
     public static void main(String[] args) {
         presentation();
-        
         char choose = inputs();
         init();
         printTower();
@@ -61,18 +60,40 @@ public class D4mnAsciiHanoiTower {
                         + "of the source tower and the target one for the move you want to make."
                         + "\nYou can't choose the number of disks to move, it will always be 1.\n");
                 sleepTime = 500;
-                
+                // show the objective:
                 printTowerColor(STARTING_PIECES, SOURCE, HELPER, TARGET, ANSI_RED);
                 boolean end = false;
+                int movesCount = 0;
+                //play until the end.
                 while(!end) {
                     moveUser();
+                    movesCount++;
                     printTower();
+                    end = checkEnd();
                 }
+                if (movesCount == Math.pow(2, STARTING_PIECES) -1 )
+                    System.out.println("Congratulations. Done with the least number of moves possible: 2^(N_disks - 1) = " + (Math.pow(2, STARTING_PIECES)-1));
+                else 
+                    System.out.println("Can do better, the least number of moves possible is 2^(N_disks - 1) = " + (Math.pow(2, STARTING_PIECES) -1));
                 break;
         }
 
     }
 
+    /**
+     * Check for the end of the game.
+     * The most simple way to check it: if the rules are correctly implemented,
+     * at the end of the game the smallest disk as to be on top of the initial
+     * TARGET tower.
+     * @return true if the game has ended.
+     */
+    private static boolean checkEnd() {
+        return hanoiTower[0][TARGET] == 1;
+    }
+    
+    /**
+     * Interface method to present the game, its aim and rules.
+     */
     private static void presentation() {
         System.out.println("Welcome to the ascii-hanoi-tower. ");
         System.out.println("The aim of the game is to move N disks from tower " + (SOURCE +1) + " to tower " + (TARGET +1) +", using tower " + (HELPER +1) +" as helper."
@@ -81,6 +102,13 @@ public class D4mnAsciiHanoiTower {
                 + "\n\tR2: can only move smaller disks on top of bigger ones\n\n");
     }
     
+    /**
+     * Method to make a move from the user.
+     * Asks for the source and target tower to move one piece from the former to the latter.
+     * Inputs are required in the format "s,t" where s and t are integer numbers indicating
+     * the number of the source and target tower.
+     * Checks if the move is legal and execute it.
+     */
     private static void moveUser() {
         Scanner gameScanner = new Scanner(System.in);
         String input;
@@ -97,6 +125,14 @@ public class D4mnAsciiHanoiTower {
         else System.out.println("R2: can only move smaller disks on top of bigger ones.");
     }
     
+    /**
+     * Method to check a move given by the user.
+     * Check if the move is legal under the rules of the game.
+     * 
+     * @param source the number of the source tower (in {0,1,2})
+     * @param target the number of the target tower (in {0,1,2})
+     * @return true if it is possible to move one disk from source to target
+     */
     private static boolean legalMove(int source, int target) {
         int wantToMove = 0;
         int onTopOf = 0;
@@ -117,10 +153,11 @@ public class D4mnAsciiHanoiTower {
             }
         }
         if (wantToMove == 0) System.out.println("You want to move disks from empty tower... ?");
+        if (source == target) System.out.println("Genius...");
 
         // if target tower is empty move is legal.
         // if target tower's top disk is greater then source tower's top disk, move is legal
-        return onTopOf == 0 || wantToMove < onTopOf;
+        return onTopOf == 0 || wantToMove <= onTopOf;
     }
     
     /**
@@ -222,6 +259,12 @@ public class D4mnAsciiHanoiTower {
         }
     }
 
+    /**
+     * The method to initialize the tower.
+     * Fill the global matrix hanoiTower with the disks.
+     * Disks are represented by integer numbers indicating the size of the disk.
+     * 0 size means there is no disk in that position.
+     */
     static void init() {
         hanoiTower = new int[STARTING_PIECES][3];
         for (int i = 0; i < STARTING_PIECES; i++) {
@@ -231,6 +274,10 @@ public class D4mnAsciiHanoiTower {
         }
     }
 
+    /**
+     * Interface method to represent the towers.
+     * Print the state of the tower, all in the same color.
+     */
     static void printTower() {
         // cime delle torri
         for (int j = 0; j < 3; j++) {
@@ -298,6 +345,18 @@ public class D4mnAsciiHanoiTower {
         }
     }
 
+    /**
+     * Interface method to print the towers state and move we'd like to do.
+     * It is useful to understand the recursive way of reasoning beyond the game.
+     * It prints in a different color the disks we want to move frome the source to target tower.
+     * Prints the target tower in the same color of the disks to move.
+     * Under each tower it is printed the role of the tower in the current move (source, helper, or target)
+     * @param n_pieces
+     * @param source
+     * @param helper
+     * @param target
+     * @param color 
+     */
     static void printTowerColor(int n_pieces, int source, int helper, int target, String color) {
         System.out.println("move ( " + n_pieces + " pieces , source : " + (source +1) + " , helper : " + (helper+1) + " , target : " + (target+1) + " ) ");
         // cime delle torri
@@ -305,7 +364,7 @@ public class D4mnAsciiHanoiTower {
             for (int ws = 0; ws < STARTING_PIECES; ws++) {
                 System.out.print(" ");
             }
-            System.out.print((j == target ? color : "") + "┌┐" + ANSI_RESET);
+            System.out.print((j == target ? color + "╔╗" : "┌┐") + ANSI_RESET);
             for (int ws = 0; ws < STARTING_PIECES; ws++) {
                 System.out.print(" ");
             }
@@ -328,7 +387,7 @@ public class D4mnAsciiHanoiTower {
                 if (hanoiTower[i][j] > 0) {
                     System.out.print((pezzoColorato ? color : "") + "██" + ANSI_RESET);
                 } else {
-                    System.out.print((j == target ? color : "") + "││" + ANSI_RESET);
+                    System.out.print((j == target ? color + "║║" : "││")  + ANSI_RESET);
                 }
                 for (int p = 0; p < hanoiTower[i][j]; p++) {
                     System.out.print((pezzoColorato ? color : "") + "█" + ANSI_RESET);
@@ -352,7 +411,7 @@ public class D4mnAsciiHanoiTower {
             for (int ws = 0; ws < STARTING_PIECES; ws++) {
                 System.out.print("─");
             }
-            System.out.print("┴┴");
+            System.out.print((j == target ? color + "╨╨" : "┴┴")  + ANSI_RESET);
             for (int ws = 0; ws < STARTING_PIECES; ws++) {
                 System.out.print("─");
             }
