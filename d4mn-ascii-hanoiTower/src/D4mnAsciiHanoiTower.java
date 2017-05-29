@@ -50,7 +50,7 @@ public class D4mnAsciiHanoiTower {
         
         switch (choose) {
             case LEARN:
-                sleepTime = 2000;
+                sleepTime = 100;
                 // recursive solution
                 moveEdu(STARTING_PIECES, SOURCE, HELPER, TARGET);
                 break;
@@ -71,10 +71,11 @@ public class D4mnAsciiHanoiTower {
                     printTower();
                     end = checkEnd();
                 }
-                if (movesCount == Math.pow(2, STARTING_PIECES) -1 )
-                    System.out.println("Congratulations. Done with the least number of moves possible: 2^(N_disks - 1) = " + (Math.pow(2, STARTING_PIECES)-1));
+                int leastMoves =  (int)Math.pow(2, STARTING_PIECES) -1;
+                if (movesCount == leastMoves )
+                    System.out.println("Congratulations. Done with the least number of moves possible: 2^N_disks - 1 = " + leastMoves);
                 else 
-                    System.out.println("Can do better, the least number of moves possible is 2^(N_disks - 1) = " + (Math.pow(2, STARTING_PIECES) -1));
+                    System.out.println("Can do better, the least number of moves possible is 2^N_disks - 1 = " + leastMoves + ". You made " + movesCount + " moves.");
                 break;
         }
 
@@ -99,7 +100,7 @@ public class D4mnAsciiHanoiTower {
         System.out.println("The aim of the game is to move N disks from tower " + (SOURCE +1) + " to tower " + (TARGET +1) +", using tower " + (HELPER +1) +" as helper."
                 + "\nThere are only two rules:"
                 + "\n\tR1: can only move one disk at a time"
-                + "\n\tR2: can only move smaller disks on top of bigger ones\n\n");
+                + "\n\tR2: can only move smaller disks on top of bigger ones\n");
     }
     
     /**
